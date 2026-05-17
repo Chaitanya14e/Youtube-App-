@@ -1,0 +1,52 @@
+/* Login.css / Signup.css */
+
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f3f4f6;
+}
+
+.auth-card {
+  width: 360px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.blue-btn {
+  background: #2563eb;
+}
+
+.green-btn {
+  background: #16a34a;
+}
+
+.auth-link {
+  color: blue;
+  text-decoration: none;
+}
+
+.msg {
+  color: red;
+  font-size: 14px;
+}
