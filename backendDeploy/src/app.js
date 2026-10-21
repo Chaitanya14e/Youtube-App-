@@ -4,7 +4,10 @@ import cookieParser from "cookie-parser";
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173", // Vite frontend
+    origin: [
+      "http://localhost:5173",
+      "https://youtube-app-eta-beige.vercel.app",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

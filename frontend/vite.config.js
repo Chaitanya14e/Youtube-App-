@@ -7,27 +7,27 @@ export default defineConfig({
   server: {
     proxy: {
       '/user': {
-        target: 'http://localhost:4000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/video': {
-        target: 'http://localhost:4000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/like': {
-        target: 'http://localhost:4000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/subscription': {
-        target: 'http://localhost:4000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/tweet': {
-        target: 'http://localhost:4000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
       '/dashboard': {
-        target: 'http://localhost:4000',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
     },
