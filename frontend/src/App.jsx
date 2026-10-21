@@ -64,6 +64,9 @@ export default function App() {
     try {
       await loginUser(data);
       const response = await getCurrentUser();
+      if (!response.data) {
+        throw new Error("Login succeeded, but the session cookie was not saved.");
+      }
       setUser(response.data);
       setMessage("");
       return true;
