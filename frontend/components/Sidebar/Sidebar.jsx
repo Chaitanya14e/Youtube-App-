@@ -1,52 +1,68 @@
-// src/components/Sidebar/Sidebar.jsx
-
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { Clapperboard, Menu, Plus, UserRound, House } from "lucide-react";
 import "./Sidebar.css";
 
-export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-
+export default function Sidebar({ isCollapsed, onToggle }) {
   return (
-    <div className={`sidebar ${isOpen ? "open" : ""}`}>
-      {/* Top */}
-      <div className="sidebar-top">
+    <aside className={`app-sidebar ${isCollapsed ? "is-collapsed" : ""}`}>
+      <div className="sidebar-brand-row">
         <button
-          className="menu-btn"
-          onClick={() => setIsOpen(!isOpen)}
+          className="sidebar-menu-button"
+          type="button"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!isCollapsed}
+          onClick={onToggle}
         >
-          ☰
+          <Menu size={21} />
         </button>
-        <h2 className="logo">FunTube</h2>
-      </div>
-      {/* Menu */}
-      <NavLink to="/home" className="menu-item" 
-      // </div>style={
-        // ({isActive})=>({
-        //     color: isActive? "black" : "black"
-        // })
-        
-        //}
-      >
-        <span>🏠</span>
-        {isOpen && <p>Home</p>}
-      </NavLink>
-
-      <div className="menu-item">
-        <span>🎬</span>
-        {isOpen && <p>Shorts</p>}
+        <NavLink className="brand-link" to="/home" aria-label="FunTube home">
+          <span className="brand-mark">
+            <Clapperboard size={19} fill="currentColor" />
+          </span>
+          <span className="brand-name">FunTube</span>
+        </NavLink>
       </div>
 
-      <div className="menu-item">
-        <span>📺</span>
-        {isOpen && <p>Subscriptions</p>}
+      <nav className="sidebar-nav" aria-label="Main navigation">
+        <NavLink
+          to="/home"
+          end
+          className={({ isActive }) =>
+            `sidebar-nav-item ${isActive ? "active" : ""}`
+          }
+          title="Home"
+        >
+          <House size={21} />
+          <span>Home</span>
+        </NavLink>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) =>
+            `sidebar-nav-item ${isActive ? "active" : ""}`
+          }
+          title="Your channel"
+        >
+          <UserRound size={21} />
+          <span>Your channel</span>
+        </NavLink>
+        <NavLink
+          to="/upload-video"
+          className={({ isActive }) =>
+            `sidebar-nav-item ${isActive ? "active" : ""}`
+          }
+          title="Upload video"
+        >
+          <Plus size={21} />
+          <span>Create video</span>
+        </NavLink>
+      </nav>
+
+      <div className="sidebar-note">
+        <span className="sidebar-note-mark">
+          <Clapperboard size={16} />
+        </span>
+        <p>Discover videos from your community.</p>
       </div>
-
-      <NavLink to="/profile" className="menu-item">
-        <span>👤</span>
-        {isOpen && <p>You</p>}
-      </NavLink>
-
-    </div>
+    </aside>
   );
 }

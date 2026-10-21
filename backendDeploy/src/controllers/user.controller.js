@@ -6,6 +6,12 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
+const getAuthCookieOptions = () => ({
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+});
+
 const generateAccessAndRefreshToken = async(userId)=>
 {
     try {
@@ -99,10 +105,7 @@ const loginUser = asyncHandler(async (req,res)=>{
     }
     const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
+    const options = getAuthCookieOptions();
     return res
     .status(200)
     .cookie("accessToken",accessToken,options)
@@ -129,10 +132,7 @@ const logoutUser = asyncHandler(async (req,res)=>{
             new:true
         }
     )
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
+    const options = getAuthCookieOptions();
     return res
     .status(200)
     .clearCookie("accessToken",options)
@@ -150,19 +150,16 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
             incomingRefreshToken,
             process.env.REFRESH_TOKEN_SECRET
         )
-        const user = await User.findById(decodedToken?._id)
+        const user = await User.findById(decodedToken?.id)
         if(!user){
             throw new ApiError(401,"Invalid Refresh Token");
         }
         if(incomingRefreshToken !== user?.refreshToken){
             throw new ApiError(401,"Refresh Token Expired or used")
         }
-        const options = {
-            httpOnly:true,
-            secure:true
-        }
-        const {accessToken,newRefreshToken} = await 
-        generateAccessAndRefreshToken(user._id)
+        const options = getAuthCookieOptions();
+        const {accessToken, refreshToken: newRefreshToken} = await
+            generateAccessAndRefreshToken(user._id)
 
         return res
         .status(200)

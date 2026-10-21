@@ -2,9 +2,23 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
 const uploadOnCloudinary = async (localFilePath) => {
-    try {
-        if (!localFilePath) return null;
+    if (!localFilePath) return null;
 
+    const missingCredentials = [
+        ["CLOUDINARY_CLOUD_NAME", process.env.CLOUDINARY_CLOUD_NAME],
+        ["CLOUDINARY_API_KEY", process.env.CLOUDINARY_API_KEY],
+        ["CLOUDINARY_API_SECRET", process.env.CLOUDINARY_API_SECRET]
+    ]
+        .filter(([, value]) => !value)
+        .map(([name]) => name);
+
+    if (missingCredentials.length) {
+        throw new Error(
+            `Missing Cloudinary configuration: ${missingCredentials.join(", ")}`
+        );
+    }
+
+    try {
         cloudinary.config({ 
             cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
             api_key: process.env.CLOUDINARY_API_KEY, 
@@ -19,8 +33,8 @@ const uploadOnCloudinary = async (localFilePath) => {
 
         return response;
     } catch (error) {
-        console.log("Cloudinary Error:", error);
-        return null;
+        console.error("Cloudinary upload failed:", error.message);
+        throw error;
     }
     
 };

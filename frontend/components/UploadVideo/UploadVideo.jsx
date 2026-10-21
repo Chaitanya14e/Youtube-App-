@@ -1,130 +1,136 @@
 import { useState } from "react";
-import "./UploadVideo.css";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Clapperboard, ImagePlus, Upload, Video } from "lucide-react";
+import { toast } from "react-toastify";
 import { publishVideo } from "../../src/lib/api";
-import { useNavigate } from "react-router-dom";
+import "./UploadVideo.css";
 
-function UploadVideo() {
+export default function UploadVideo() {
   const navigate = useNavigate();
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    if (!videoFile || !thumbnail) {
+      toast.error("Choose a video and a thumbnail before uploading.");
+      return;
+    }
 
+    setIsUploading(true);
     try {
       const formData = new FormData();
-
-      formData.append("title", title);
-      formData.append("description", description);
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
       formData.append("videoFile", videoFile);
       formData.append("thumbnail", thumbnail);
-
       await publishVideo(formData);
-
-      alert("Video uploaded successfully");
-
+      toast.success("Your video is live!");
       navigate("/home");
     } catch (error) {
-      console.log(error);
-      alert(error.message);
+      toast.error(error.message || "Your video couldn't be uploaded.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return (
-    <div id="content">
-      <div id="container">
-        <h1>Upload Video</h1>
-        <form id="form1" onSubmit={submitHandler}>
+    <main className="upload-page">
+      <header className="upload-header">
+        <Link className="upload-brand" to="/home">
+          <span className="upload-brand-mark">
+            <Clapperboard size={18} fill="currentColor" />
+          </span>
+          FunTube
+        </Link>
+        <Link className="upload-back-link" to="/home">
+          <ArrowLeft size={17} />
+          Back to feed
+        </Link>
+      </header>
 
-          <div className="details">
+      <section className="upload-panel">
+        <div className="upload-heading">
+          <span className="upload-heading-icon">
+            <Upload size={20} />
+          </span>
+          <div>
+            <h1>Upload a video</h1>
+            <p>Share something worth watching.</p>
+          </div>
+        </div>
 
-            <label htmlFor="title">
-              Enter title
-            </label>
-
-            <br />
-
+        <form className="upload-form" onSubmit={submitHandler}>
+          <label className="upload-field">
+            <span>Title</span>
             <input
               type="text"
-              id="title"
-              placeholder="Enter Title"
+              name="title"
+              placeholder="Add a title that tells viewers what your video is about"
               value={title}
-              onChange={(e) =>
-                setTitle(e.target.value)
-              }
+              maxLength={120}
+              onChange={(event) => setTitle(event.target.value)}
+              required
             />
+          </label>
 
-            <br />
+          <label className="upload-field">
+            <span>Description</span>
+            <textarea
+              name="description"
+              placeholder="Tell viewers a little more about your video"
+              value={description}
+              rows={5}
+              onChange={(event) => setDescription(event.target.value)}
+              required
+            />
+          </label>
 
-            <label htmlFor="description">
-              Enter description
+          <div className="upload-files">
+            <label className="file-drop">
+              <Video size={23} />
+              <strong>Video file</strong>
+              <span>{videoFile?.name || "Choose a video from your device"}</span>
+              <input
+                type="file"
+                accept="video/*"
+                onChange={(event) =>
+                  setVideoFile(event.target.files?.[0] || null)
+                }
+                required
+              />
             </label>
 
-            <br />
-
-            <textarea
-              id="description"
-              placeholder="Enter Description"
-              value={description}
-              onChange={(e) =>
-                setDescription(e.target.value)
-              }
-            />
-
+            <label className="file-drop">
+              <ImagePlus size={23} />
+              <strong>Thumbnail</strong>
+              <span>{thumbnail?.name || "Choose a thumbnail image"}</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(event) =>
+                  setThumbnail(event.target.files?.[0] || null)
+                }
+                required
+              />
+            </label>
           </div>
 
-          <div className="upload">
+          <p className="upload-hint">
+            Add a clear thumbnail so viewers know what they’re about to watch.
+          </p>
 
-            <label htmlFor="video">
-              Upload Video
-            </label>
-
-            <br />
-
-            <input
-              type="file"
-              id="video"
-              className="fupload"
-              accept="video/*"
-              onChange={(e) =>
-                setVideoFile(e.target.files[0])
-              }
-            />
-
-            <br />
-
-            <label
-              htmlFor="thumbnail"
-              className="thumb"
-            >
-              Upload Thumbnail
-            </label>
-
-            <br />
-
-            <input
-              type="file"
-              id="thumbnail"
-              className="fupload"
-              accept="image/*"
-              onChange={(e) =>
-                setThumbnail(e.target.files[0])
-              }
-            />
-
-            <button id="uploadbtn">
-              Upload Video
+          <div className="upload-footer">
+            <Link to="/home">Cancel</Link>
+            <button className="publish-button" type="submit" disabled={isUploading}>
+              {isUploading ? "Uploading…" : "Publish video"}
             </button>
-
           </div>
         </form>
-
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
-
-export default UploadVideo;

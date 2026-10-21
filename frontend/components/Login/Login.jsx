@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {toast} from "react-toastify";
+import { Clapperboard } from "lucide-react";
+import { toast } from "react-toastify";
 import "./Login.css";
 
 export default function Login({ onLogin, message }) {
@@ -36,33 +37,49 @@ export default function Login({ onLogin, message }) {
   return (
     <div className="auth-container">
       <form className="auth-card" onSubmit={submitHandler}>
-        <h2>Login</h2>
+        <div className="auth-brand">
+          <span className="auth-brand-mark">
+            <Clapperboard size={18} fill="currentColor" />
+          </span>
+          FunTube
+        </div>
+        <h2>Welcome back</h2>
+        <p className="auth-subtitle">Sign in to find your next favorite video.</p>
 
         <input
           className="auth-input"
+          type="text"
+          name="emailOrUsername"
+          autoComplete="username"
+          aria-label="Email or username"
           placeholder="Email or Username"
           value={emailOrUsername}
           onChange={(e) => setEmailOrUsername(e.target.value)}
+          required
         />
 
         <input
           className="auth-input"
           type="password"
+          name="password"
+          autoComplete="current-password"
+          aria-label="Password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
         <button className="auth-btn blue-btn" type="submit">
-          Login
+          Sign in
         </button>
 
-        <p className="msg">{message}</p>
+        {message && <p className="msg">{message}</p>}
 
         <p>
-          Don't have account?{" "}
+          New to FunTube?{" "}
           <Link to="/signup" className="auth-link">
-            Signup
+            Create an account
           </Link>
         </p>
       </form>

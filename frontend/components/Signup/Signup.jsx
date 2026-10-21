@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {toast, ToastContainer} from "react-toastify";
+import { Clapperboard } from "lucide-react";
+import { toast } from "react-toastify";
 import "./Signup.css";
 
 export default function Signup({ onSignup, message }) {
@@ -44,65 +45,91 @@ export default function Signup({ onSignup, message }) {
   return (
     <div className="auth-container">
       <form className="auth-card" onSubmit={submitHandler}>
-        <h2>Signup</h2>
+        <div className="auth-brand">
+          <span className="auth-brand-mark">
+            <Clapperboard size={18} fill="currentColor" />
+          </span>
+          FunTube
+        </div>
+        <h2>Create your account</h2>
+        <p className="auth-subtitle">Join in and share what you love to watch.</p>
 
         <input
           className="auth-input"
+          name="fullname"
+          autoComplete="name"
+          aria-label="Full name"
           placeholder="Full Name"
           value={fullname}
           onChange={(e) => setFullname(e.target.value)}
+          required
         />
 
         <input
           className="auth-input"
+          type="email"
+          name="email"
+          autoComplete="email"
+          aria-label="Email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
 
         <input
           className="auth-input"
+          name="username"
+          autoComplete="username"
+          aria-label="Username"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
 
         <input
           className="auth-input"
           type="password"
+          name="password"
+          autoComplete="new-password"
+          aria-label="Password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <label htmlFor="avatar-input">Upload Avatar</label><br />
         <input
           className="auth-input"
           type="file"
           id="avatar-input"
-          onChange={(e) => setAvatar(e.target.files[0])}
+          accept="image/*"
+          onChange={(e) => setAvatar(e.target.files?.[0] || null)}
+          required
         />
         <label htmlFor="cover-image-input">Upload Cover Image (Optional)</label><br />
         <input
           className="auth-input"
           type="file"
           id="cover-image-input"
-          onChange={(e) => setCoverImage(e.target.files[0])}
+          accept="image/*"
+          onChange={(e) => setCoverImage(e.target.files?.[0] || null)}
         />
 
-        <button className="auth-btn green-btn">
-          Signup
+        <button className="auth-btn green-btn" type="submit">
+          Create account
         </button>
 
-        <p className="msg">{message}</p>
+        {message && <p className="msg">{message}</p>}
 
         <p>
-          Already have account?{" "}
+          Already have an account?{" "}
           <Link to="/" className="auth-link">
-            Login
+            Sign in
           </Link>
         </p>
       </form>
-      <ToastContainer/>
     </div>
   );
 }

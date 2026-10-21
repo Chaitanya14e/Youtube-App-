@@ -1,6 +1,6 @@
 // src/api/api.js
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:4000").replace(/\/$/, "");
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
 
 // Common request helper
 const request = async (path, options = {}) => {
@@ -15,12 +15,12 @@ const request = async (path, options = {}) => {
     },
   });
 
-  let data = null;
+  let data;
 
   try {
     data = await response.json();
-  } catch {
-    data = null;
+  } catch (parseError) {
+    if (!(parseError instanceof SyntaxError)) throw parseError;
   }
 
   if (!response.ok) {
@@ -86,8 +86,22 @@ export const publishVideo = async (formData) => {
   });
 };
 
-export const getAllVideos = async () => {
-  return request("/video", {
+export const getAllVideos = async ({
+  query,
+  page = 1,
+  limit = 10,
+  sortBy = "createdAt",
+  sortType = "desc",
+} = {}) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+    sortBy,
+    sortType,
+  });
+  if (query) params.set("query", query);
+
+  return request(`/video?${params.toString()}`, {
     method: "GET",
   });
 };

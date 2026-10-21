@@ -1,101 +1,79 @@
 // src/pages/ChangePassword.jsx
 
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Clapperboard } from "lucide-react";
+import "./ChangePassword.css";
 
 export default function ChangePassword({
   onSubmit,
-  goBack,
   message,
 }) {
+  const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-
-    onSubmit({
-      oldPassword,
-      newPassword,
-    });
-
-    setOldPassword("");
-    setNewPassword("");
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    setIsSaving(true);
+    const success = await onSubmit({ oldPassword, newPassword });
+    setIsSaving(false);
+    if (success) {
+      setOldPassword("");
+      setNewPassword("");
+    }
   };
 
   return (
-    <div style={styles.container}>
-      <form style={styles.card} onSubmit={submitHandler}>
-        <h2>Change Password</h2>
-
+    <main className="password-page">
+      <header className="password-header">
+        <Link className="password-brand" to="/home">
+          <span>
+            <Clapperboard size={18} fill="currentColor" />
+          </span>
+          FunTube
+        </Link>
+        <Link className="password-back" to="/home">
+          <ArrowLeft size={17} />
+          Back to feed
+        </Link>
+      </header>
+      <form className="password-card" onSubmit={submitHandler}>
+        <h1>Change password</h1>
+        <p>Choose a strong password to keep your account secure.</p>
+        <label htmlFor="old-password">Current password</label>
         <input
-          style={styles.input}
+          id="old-password"
           type="password"
-          placeholder="Old Password"
+          autoComplete="current-password"
+          placeholder="Enter your current password"
           value={oldPassword}
-          onChange={(e) => setOldPassword(e.target.value)}
+          onChange={(event) => setOldPassword(event.target.value)}
+          required
         />
-
+        <label htmlFor="new-password">New password</label>
         <input
-          style={styles.input}
+          id="new-password"
           type="password"
-          placeholder="New Password"
+          autoComplete="new-password"
+          placeholder="Enter a new password"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
+          onChange={(event) => setNewPassword(event.target.value)}
+          required
         />
-
-        <button style={styles.button}>Update Password</button>
-
-        <button
-          type="button"
-          style={styles.back}
-          onClick={goBack}
-        >
-          Back
+        {message && <p className="password-message">{message}</p>}
+        <button type="submit" disabled={isSaving}>
+          {isSaving ? "Saving…" : "Update password"}
         </button>
-
-        <p>{message}</p>
+        <button
+          className="password-cancel"
+          type="button"
+          onClick={() => navigate("/home")}
+        >
+          Cancel
+        </button>
       </form>
-    </div>
+    </main>
   );
 }
-
-const styles = {
-  container: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "#f3f4f6",
-  },
-  card: {
-    width: "350px",
-    background: "#fff",
-    padding: "30px",
-    borderRadius: "10px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    marginBottom: "12px",
-  },
-  button: {
-    width: "100%",
-    padding: "10px",
-    background: "#16a34a",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-  back: {
-    marginTop: "10px",
-    width: "100%",
-    padding: "10px",
-    background: "#6b7280",
-    color: "#fff",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-};

@@ -1,57 +1,210 @@
-.player-container {
+.watch-page {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding: 40px;
+  padding: 0 24px 60px;
+  color: #f1f1f1;
+  background: #0f0f0f;
+}
+
+.watch-header {
   display: flex;
-  justify-content: center;
+  height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
-.player-card {
-  width: 900px;
+.watch-brand,
+.back-to-feed {
+  display: inline-flex;
+  align-items: center;
+  color: #f1f1f1;
+  text-decoration: none;
 }
 
-.main-video {
+.watch-brand {
+  gap: 9px;
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: -0.7px;
+}
+
+.watch-brand-mark {
+  display: grid;
+  width: 31px;
+  height: 24px;
+  place-items: center;
+  color: #fff;
+  background: #e62117;
+  border-radius: 8px;
+}
+
+.back-to-feed {
+  padding: 9px 13px;
+  gap: 8px;
+  color: #ddd;
+  background: #222;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.back-to-feed:hover,
+.watch-back-button:hover {
+  background: #333;
+}
+
+.watch-content {
+  width: min(100%, 1120px);
+  margin: 28px auto 0;
+}
+
+.watch-video {
+  display: block;
   width: 100%;
-  height: 500px;
-  justify-content: left;
+  max-height: min(68vh, 700px);
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
+.watch-details {
+  padding-top: 19px;
+}
+
+.watch-details h1 {
+  margin: 0 0 18px;
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.4px;
+}
+
+.watch-channel-row {
   display: flex;
+  align-items: center;
+  padding-bottom: 18px;
+  gap: 12px;
+  border-bottom: 1px solid #303030;
+}
+
+.watch-avatar {
+  width: 44px;
+  height: 44px;
+  background: #282828;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.watch-channel {
+  display: grid;
+  gap: 4px;
+}
+
+.watch-channel strong {
+  font-size: 14px;
+}
+
+.watch-channel span {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.watch-views {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 7px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+.watch-description {
+  margin-top: 17px;
+  padding: 15px 18px;
+  color: #ddd;
+  background: #1d1d1d;
   border-radius: 12px;
-  background: black;
 }
 
-.player-card h2 {
-  margin-top: 20px;
-  margin-left: -45px;
+.watch-description p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
 }
 
-.player-card p {
-  color: #666;
-  margin-top: 10px;
-  margin-left: -45px;
+.watch-state {
+  display: flex;
+  min-height: 65vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  text-align: center;
 }
 
-button{
-    height: 50px;
-    width: 100px;
-    border-radius: 20px;
-    background-color: red;
-    color: white;
-    text-decoration: none;
+.watch-state h1 {
+  margin: 17px 0 6px;
+  color: #f1f1f1;
+  font-size: 22px;
 }
 
-.button{
-    justify-content: left;
-    display: flex;
-    margin-top: -20px;
-    margin-left: -500px;
+.watch-state p {
+  max-width: 440px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-video{
-    margin-left: -50px;
-    margin-top: 50px;
+.watch-error-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  color: #ff8a80;
+  background: #3b2020;
+  border-radius: 50%;
+  font-size: 26px;
+  font-weight: 700;
 }
 
-.nl1{
-    text-decoration: none;
-    color: white;
+.watch-back-button {
+  margin-top: 18px;
+  padding: 10px 16px;
+  color: #f1f1f1;
+  background: #272727;
+  border-radius: 20px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .watch-page {
+    padding: 0 12px 30px;
+  }
+
+  .watch-header {
+    height: 58px;
+  }
+
+  .watch-content {
+    margin-top: 12px;
+  }
+
+  .watch-video {
+    width: calc(100% + 24px);
+    max-height: 60vh;
+    margin: 0 -12px;
+    border-radius: 0;
+  }
+
+  .watch-channel-row {
+    gap: 9px;
+  }
+
+  .watch-views {
+    font-size: 12px;
+  }
 }
