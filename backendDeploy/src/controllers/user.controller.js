@@ -6,11 +6,25 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
-const getAuthCookieOptions = () => ({
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
-});
+const getAuthCookieOptions = (req) => {
+    const origin = req.get("origin");
+    let isCrossSite = false;
+
+    if (origin) {
+        try {
+            isCrossSite = new URL(origin).hostname !== req.hostname;
+        } catch {
+            isCrossSite = false;
+        }
+    }
+
+    const requiresCrossSiteCookie = process.env.NODE_ENV === "production" || isCrossSite;
+    return {
+        httpOnly: true,
+        secure: requiresCrossSiteCookie,
+        sameSite: requiresCrossSiteCookie ? "none" : "lax"
+    };
+};
 
 const generateAccessAndRefreshToken = async(userId)=>
 {
@@ -105,7 +119,7 @@ const loginUser = asyncHandler(async (req,res)=>{
     }
     const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
-    const options = getAuthCookieOptions();
+    const options = getAuthCookieOptions(req);
     return res
     .status(200)
     .cookie("accessToken",accessToken,options)
@@ -132,7 +146,7 @@ const logoutUser = asyncHandler(async (req,res)=>{
             new:true
         }
     )
-    const options = getAuthCookieOptions();
+    const options = getAuthCookieOptions(req);
     return res
     .status(200)
     .clearCookie("accessToken",options)
@@ -157,7 +171,7 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
         if(incomingRefreshToken !== user?.refreshToken){
             throw new ApiError(401,"Refresh Token Expired or used")
         }
-        const options = getAuthCookieOptions();
+        const options = getAuthCookieOptions(req);
         const {accessToken, refreshToken: newRefreshToken} = await
             generateAccessAndRefreshToken(user._id)
 
