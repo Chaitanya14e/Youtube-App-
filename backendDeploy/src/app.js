@@ -6,8 +6,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://youtube-app-eta-beige.vercel.app",
-      "https://youtube-c6896viff-chaitanyaarora2006-9624s-projects.vercel.app"
+      "fun-tube-app.vercel.app"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
