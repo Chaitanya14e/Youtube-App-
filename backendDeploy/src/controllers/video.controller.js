@@ -102,16 +102,19 @@ const publishAVideo = asyncHandler(async (req, res) => {
     if(!thumbnailLocalPath){
         throw new ApiError(400,"Thumbnail is required")
     }
-    const uploadVideo = await uploadOnCloudinary(videoLocalPath);
+    const uploadVideo = await uploadOnCloudinary(videoLocalPath, "video");
     const uploadThumbnail = await uploadOnCloudinary(thumbnailLocalPath);
-    if(!uploadVideo){
-        throw new ApiError(401,"Video required")
+    if (!uploadVideo?.secure_url) {
+        throw new ApiError(500, "Cloudinary did not return a secure video URL");
+    }
+    if (!uploadThumbnail?.secure_url) {
+        throw new ApiError(500, "Cloudinary did not return a secure thumbnail URL");
     }
     const video = await Video.create({
         title,
         description,
-        videoFile: uploadVideo.url,
-        thumbnail: uploadThumbnail.url,
+        videoFile: uploadVideo.secure_url,
+        thumbnail: uploadThumbnail.secure_url,
         duration: uploadVideo.duration || 0,
         owner: req.user?._id
     })
@@ -165,7 +168,7 @@ const updateVideo = asyncHandler(async (req, res) => {
             throw new ApiError(500, "Error uploading thumbnail");
         }
 
-        video.thumbnail = uploadedThumbnail.url;
+        video.thumbnail = uploadedThumbnail.secure_url;
     }
 
     await video.save();

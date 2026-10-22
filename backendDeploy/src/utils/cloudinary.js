@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath, resourceType = "auto") => {
     if (!localFilePath) return null;
 
     const missingCredentials = [
@@ -26,7 +26,7 @@ const uploadOnCloudinary = async (localFilePath) => {
         });
 
         const response = await cloudinary.uploader.upload(localFilePath, {
-            resource_type: "auto"
+            resource_type: resourceType
         });
         // console.log("file is uploaded on cloudinary ",response.url);
         fs.unlinkSync(localFilePath);

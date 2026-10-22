@@ -16,6 +16,8 @@ export default function VideoPlayer() {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const videoUrl = video?.videoFile?.replace(/^http:\/\//i, "https://");
+  const thumbnailUrl = video?.thumbnail?.replace(/^http:\/\//i, "https://");
 
   useEffect(() => {
     let isCurrentRequest = true;
@@ -77,10 +79,10 @@ export default function VideoPlayer() {
             className="watch-video"
             controls
             playsInline
-            poster={video.thumbnail}
+            poster={thumbnailUrl}
             preload="metadata"
           >
-            <source src={video.videoFile} />
+            <source src={videoUrl} />
             Your browser does not support HTML video.
           </video>
           <section className="watch-details">
