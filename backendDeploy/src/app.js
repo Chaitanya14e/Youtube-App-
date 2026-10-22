@@ -6,7 +6,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "fun-tube-app.vercel.app"
+      "https://fun-tube-app.vercel.app"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
