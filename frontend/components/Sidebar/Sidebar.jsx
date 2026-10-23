@@ -1,5 +1,13 @@
 import { NavLink } from "react-router-dom";
-import { Clapperboard, Menu, Plus, UserRound, House } from "lucide-react";
+import {
+  Clapperboard,
+  Menu,
+  Plus,
+  UserRound,
+  House,
+  Library,
+  LayoutDashboard,
+} from "lucide-react";
 import "./Sidebar.css";
 
 export default function Sidebar({ isCollapsed, onToggle }) {
@@ -54,6 +62,26 @@ export default function Sidebar({ isCollapsed, onToggle }) {
         >
           <Plus size={21} />
           <span>Create video</span>
+        </NavLink>
+        <NavLink
+          to="/library"
+          className={({ isActive }) =>
+            `sidebar-nav-item ${isActive ? "active" : ""}`
+          }
+          title="Your library"
+        >
+          <Library size={21} />
+          <span>Your library</span>
+        </NavLink>
+        <NavLink
+          to="/studio"
+          className={({ isActive }) =>
+            `sidebar-nav-item ${isActive ? "active" : ""}`
+          }
+          title="Creator studio"
+        >
+          <LayoutDashboard size={21} />
+          <span>Creator studio</span>
         </NavLink>
       </nav>
 

@@ -1,9 +1,10 @@
 import mongoose from "mongoose"
-import {Comment} from "../models/comment.model.js"
+import {Comment} from "../models/comment.models.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import { Video } from "../models/video.models.js"
+import {Like} from "../models/like.models.js"
 
 const getVideoComments = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
@@ -50,6 +51,32 @@ const getVideoComments = asyncHandler(async (req, res) => {
             $addFields: {
                 owner: { $first: "$owner" }
             }
+        },
+        {
+            $lookup: {
+                from: "likes",
+                let: { commentId: "$_id" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: { $eq: ["$comment", "$$commentId"] }
+                        }
+                    },
+                    { $project: { likedBy: 1 } }
+                ],
+                as: "likes"
+            }
+        },
+        {
+            $addFields: {
+                likeCount: { $size: "$likes" },
+                isLiked: {
+                    $in: [new mongoose.Types.ObjectId(req.user?._id), "$likes.likedBy"]
+                }
+            }
+        },
+        {
+            $project: { likes: 0 }
         }
     ]);
 
@@ -75,15 +102,12 @@ const addComment = asyncHandler(async (req, res) => {
     // TODO: add a comment to a video
     const {content} = req.body
     const {videoId} = req.params
-    if(content.trim() === ""){
+    if(!content?.trim()){
         throw new ApiError(400,"Comment can't be empty")
     }
-    if(!(await Video.findById(videoId))){
+    const video = await Video.findById(videoId)
+    if(!video){
         throw new ApiError(404,"Video not found")
-    }
-    const user = await Video.findById(videoId)
-    if(!user){
-        throw new ApiError(400,"User doesn't exist")
     }
     const comment = await Comment.create({
         content:content,
@@ -100,7 +124,7 @@ const addComment = asyncHandler(async (req, res) => {
 
 const updateComment = asyncHandler(async (req, res) => {
     // TODO: update a comment
-    const {commentId, videoId} = req.params
+    const {commentId} = req.params
     const {newComment} = req.body
     if(!mongoose.isValidObjectId(commentId) || !commentId){ // this commentId check is redudant as, if the comment doesn't exist, the endpoint won't be hit at all 
         throw new ApiError(400, "Invalid comment id")
@@ -111,8 +135,8 @@ const updateComment = asyncHandler(async (req, res) => {
         throw new ApiError(404,"Comment dosen't exists.")
     }
 
-    if(!(await Video.findById(videoId) ) ){
-        throw new ApiError(404,"Video dosen't exists, Sorry")
+    if (!newComment?.trim()) {
+        throw new ApiError(400, "Comment can't be empty")
     }
 
     //we also need to check if the comment being updated was writtend by the same user or not- else any user can update any comment
@@ -121,7 +145,7 @@ const updateComment = asyncHandler(async (req, res) => {
     }
     const updatedComment = await Comment.findByIdAndUpdate(
         commentId,
-        {content:newComment},
+        {content:newComment.trim()},
         {new:true}
     )
     if(!updatedComment){
@@ -129,7 +153,7 @@ const updateComment = asyncHandler(async (req, res) => {
     }
     return res
     .status(200)
-    .json(new ApiResponse(200,updateComment,"Comment updated successfully"))
+    .json(new ApiResponse(200,updatedComment,"Comment updated successfully"))
 })
 
 const deleteComment = asyncHandler(async (req, res) => {

@@ -21,6 +21,9 @@ import Profile from "../components/Profile/Profile";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
 import UploadVideo from "../components/UploadVideo/UploadVideo";
 import VideoPlayer from "../components/VideoPlayer/VideoPlayer";
+import Studio from "../components/Studio/Studio";
+import Library from "../components/Library/Library";
+import Channel from "../components/Channel/Channel";
 import { toast, ToastContainer } from "react-toastify";
 import "./App.css";
 
@@ -135,7 +138,34 @@ export default function App() {
             path="/profile"
             element={
               <ProtectedRoute user={user} authLoading={authLoading}>
-                <Profile user={user} />
+                <Profile
+                  user={user}
+                  onUserUpdated={setUser}
+                />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/studio"
+            element={
+              <ProtectedRoute user={user} authLoading={authLoading}>
+                <Studio user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/library"
+            element={
+              <ProtectedRoute user={user} authLoading={authLoading}>
+                <Library user={user} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/channel/:username"
+            element={
+              <ProtectedRoute user={user} authLoading={authLoading}>
+                <Channel user={user} />
               </ProtectedRoute>
             }
           />
@@ -162,7 +192,7 @@ export default function App() {
             path="/video/:videoId"
             element={
               <ProtectedRoute user={user} authLoading={authLoading}>
-                <VideoPlayer />
+                <VideoPlayer user={user} />
               </ProtectedRoute>
             }
           />

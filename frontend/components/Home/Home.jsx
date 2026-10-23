@@ -295,7 +295,7 @@ export default function Home({ user, onLogout }) {
                         </Link>
                         <Link
                           className="channel-name"
-                          to={`/video/${video._id}`}
+                          to={`/channel/${encodeURIComponent(video.owner?.username || "")}`}
                         >
                           {video.owner?.fullname ||
                             video.owner?.username ||
